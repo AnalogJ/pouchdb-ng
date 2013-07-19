@@ -1,7 +1,7 @@
 {
-  "name": "pouch-ng",
+  "name": "pouchdb-ng",
   "version": "1.0.0",
-  "main": "pouch-ng.js",
+  "main": "pouchdb-ng.js",
   "ignore": [
     "example",
     ".idea",
