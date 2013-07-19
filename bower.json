@@ -1,0 +1,14 @@
+{
+  "name": "pouch-ng",
+  "version": "1.0.0",
+  "main": "pouch-ng.js",
+  "ignore": [
+    "example",
+    ".idea",
+    ".git"
+  ],
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}
