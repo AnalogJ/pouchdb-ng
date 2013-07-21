@@ -6,12 +6,11 @@
 /* Services */
 // when true, all pouchdb-ng ops are logged to the JavaScript console
 // some critical errors and warnings are always logged, even if this is false
-var DEVMODE = true;
 angular.module("pouchdb-ng", []).
-    factory('pouch', function($rootScope,$q,safeApply,logger, pouchClient) {
+    factory('pouchClient', function($rootScope,$q,safeApply,logger) {
 
         //Partially based on: https://gist.github.com/katowulf/5006634
-        var pouch = {};
+        var pouchClient = {};
         logger.log('Creating pouch');
         ///////////////////////////////////////////////////////////////////////
         // Configuration
@@ -50,13 +49,13 @@ angular.module("pouchdb-ng", []).
          * By default, this feature is turned off and this function will return an empty list. To enable this feature and obtain a list of all the databases, set Pouch.enableAllDbs to true before creating any databases.
          * @returns {*}
          */
-        pouch.allDbs = function(){
+        pouchClient.allDbs = function(){
             var deferred = $q.defer();
             Pouch.allDbs(basicDeferredCallback(deferred, 'allDbs'));
             return deferred.promise;
         }
 
-        Object.defineProperties(pouch, {
+        Object.defineProperties(pouchClient, {
             "enableAllDbs": { get: function () { return Pouch.enableAllDbs; }, set: function(x) { Pouch.enableAllDbs = x; } }
         });
 
@@ -69,8 +68,8 @@ angular.module("pouchdb-ng", []).
          * @param name
          * @param options
          */
-        pouch.create =  function(name, options) {
-            return pouchClient(name, options);
+        pouchClient.create =  function(name, options) {
+            return pouchDatabase(name, options);
         }
 
         /**
@@ -78,7 +77,7 @@ angular.module("pouchdb-ng", []).
          * @param name
          * @returns {*}
          */
-        pouch.destroy  = function(name){
+        pouchClient.destroy  = function(name){
             var deferred = $q.defer();
             Pouch.destroy(name, basicDeferredCallback(deferred, 'destroy'));
             return deferred.promise;
@@ -90,19 +89,19 @@ angular.module("pouchdb-ng", []).
          * @param options
          * @returns {*}
          */
-        pouch.replicate  = function(from, to, options){
+        pouchClient.replicate  = function(from, to, options){
             var deferred = $q.defer();
             Pouch.replicate(from, to, options, basicDeferredCallback(deferred, 'replicate'));
             return deferred.promise;
         }
 
-        return pouch;
+        return pouchClient;
     })
     .factory('pouchDatabase', function($rootScope,$q,safeApply, logger) {
 
         return function(name, options){
             logger.log('Creating pouchClient');
-            var pouchClient = {}
+            var pouchDatabase = {}
             ///////////////////////////////////////////////////////////////////////
             // Private Methods
             ///////////////////////////////////////////////////////////////////////
@@ -323,18 +322,28 @@ angular.module("pouchdb-ng", []).
             }
         }
     }])
-    .factory('logger', [function($log) {
+    .provider('logger', function(){
+        this.DEVMODE = false;
 
+        this.setDEVMODE = function(devmode){
+            this.DEVMODE = devmode;
+        }
 
-            var DEVMODE = DEVMODE || false;
+        this.$get = ['$window',function($window) {
+            var DEVMODE = this.DEVMODE;
+            var logger = {};
             logger.log = function(){
-                DEVMODE && $log.log.apply($log, arguments);
+                DEVMODE && console.log.apply(console, arguments);
             }
             logger.always = function(){
-                $log.log.apply($log, arguments);
+                console.log.apply(console, arguments);
             }
-
-    }])
+            return logger;
+        }]
+    })
+    .config(function(loggerProvider){
+        loggerProvider.setDEVMODE(true);
+    });
 
 
 
