@@ -232,6 +232,9 @@ angular.module("pouchdb-ng", []).
              */
             pouchDatabase.allDocs =  function(options) {
                 var deferred = $q.defer();
+                if (options == null) {
+                  options = {};
+                }
                 pouchDatabase._database.allDocs( options, basicDeferredCallback(deferred, 'allDocs'));
                 return deferred.promise;
             }
