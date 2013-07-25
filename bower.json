@@ -8,6 +8,7 @@
     ".git"
   ],
   "dependencies": {
+    "pouchdb": "http://download.pouchdb.com/pouchdb-nightly.min.js"
   },
   "devDependencies": {
   }
