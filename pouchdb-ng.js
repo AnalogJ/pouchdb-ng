@@ -7,7 +7,7 @@
 // when true, all pouchdb-ng ops are logged to the JavaScript console
 // some critical errors and warnings are always logged, even if this is false
 angular.module("pouchdb-ng", []).
-    factory('pouchClient', function($rootScope,$q,safeApply,logger) {
+    factory('pouchClient', function($rootScope,$q,safeApply,logger, pouchDatabase) {
 
         //Partially based on: https://gist.github.com/katowulf/5006634
         var pouchClient = {};
